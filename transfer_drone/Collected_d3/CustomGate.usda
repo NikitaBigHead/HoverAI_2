@@ -1,0 +1,83 @@
+#usda 1.0
+(
+    defaultPrim = "Gate"
+    upAxis = "Z"
+    metersPerUnit = 1.0
+    doc = "Custom drone racing gate — solid red square frame, opening faces +X"
+)
+
+# Gate frame in Y-Z plane; drone flies through in +X direction.
+# Inner opening: 2.0m wide (Y) x 2.0m tall (Z)
+# Bar thickness: 0.15m
+# Total frame: 2.3m wide x 2.3m tall
+# Bottom of gate at Z=0 (floor level)
+
+def Xform "Gate" (
+    kind = "component"
+)
+{
+    def "Looks"
+    {
+        def Material "RedMat"
+        {
+            token outputs:surface.connect = </Gate/Looks/RedMat/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.9, 0.05, 0.05)
+                float inputs:metallic = 0.1
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+    }
+
+    # Top horizontal bar
+    def Cube "TopBar" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Gate/Looks/RedMat>
+        double size = 1.0
+        double3 xformOp:scale = (0.15, 2.3, 0.15)
+        double3 xformOp:translate = (0.0, 0.0, 2.225)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    # Bottom horizontal bar
+    def Cube "BottomBar" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Gate/Looks/RedMat>
+        double size = 1.0
+        double3 xformOp:scale = (0.15, 2.3, 0.15)
+        double3 xformOp:translate = (0.0, 0.0, 0.075)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    # Left vertical post
+    def Cube "LeftPost" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Gate/Looks/RedMat>
+        double size = 1.0
+        double3 xformOp:scale = (0.15, 0.15, 2.0)
+        double3 xformOp:translate = (0.0, -1.075, 1.15)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    # Right vertical post
+    def Cube "RightPost" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Gate/Looks/RedMat>
+        double size = 1.0
+        double3 xformOp:scale = (0.15, 0.15, 2.0)
+        double3 xformOp:translate = (0.0, 1.075, 1.15)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}

@@ -1,0 +1,5 @@
+.usdz filter=lfs diff=lfs merge=lfs -text
+.usd filter=lfs diff=lfs merge=lfs -text
+.task filter=lfs diff=lfs merge=lfs -text
+*.usdz filter=lfs diff=lfs merge=lfs -text
+*.usd filter=lfs diff=lfs merge=lfs -text

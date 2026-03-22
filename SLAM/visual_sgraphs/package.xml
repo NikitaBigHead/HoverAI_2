@@ -1,0 +1,40 @@
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypedPath="file"?>
+<package format="3">
+  <name>vs_graphs</name>
+  <version>1.5.0</version>
+  <description>Visual S-Graphs (vS-Graphs) ROS-based Implementation.</description>
+  <maintainer email="a.tourani1991@gmail.com">Ali Tourani</maintainer>
+  <maintainer email="saad.ejaz@uni.lu">Saad Ejaz</maintainer>
+  <maintainer email="asier.bikandi@uni.lu">Asier Bikandi</maintainer>
+  <maintainer email="miguel.fernandez@uni.lu">Miguel Fernandez</maintainer>
+  <license>GNU General Public License v3.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+  <depend>backward_ros</depend>
+  <depend>segmenter_ros</depend>
+  <depend>rviz_visual_tools</depend>
+  <depend>situational_graphs_msgs</depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <member_of_group>rosidl_interface_packages</member_of_group>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
