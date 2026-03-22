@@ -133,3 +133,48 @@ Or simply launch:
 ```bash
 ros2 launch vs_graphs autosense.launch.py
 ```
+
+## Live Mode - RealSense D435i with IMU
+
+First, source ROS 2 and the workspace:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source ~/workspace/install/setup.bash
+export DISPLAY=:1
+
+#to launch camera
+ros2 launch realsense2_camera rs_launch.py \
+  pointcloud.enable:=false \
+  align_depth.enable:=true \
+  enable_infra1:=false \
+  enable_infra2:=false \
+  enable_accel:=true \
+  enable_gyro:=true \
+  gyro_fps:=200 \
+  accel_fps:=63 \
+  unite_imu_method:=2 \
+  rgb_camera.color_profile:="640,480,15" \
+  depth_module.depth_profile:="640,480,15"
+
+#to launch slam itself
+ros2 launch vs_graphs rgbd-imu.launch.py \
+  offline:=false \
+  launch_rviz:=true \
+  colored_pointcloud:=true \
+  visualize_segmented_scene:=true \
+  rgb_image_topic:=/camera/camera/color/image_raw \
+  depth_image_topic:=/camera/camera/depth/image_rect_raw \
+  rgb_camera_info_topic:=/camera/camera/color/camera_info \
+  imu_topic:=/camera/camera/imu
+```
+
+To verify that everything is published:
+```bash
+ros2 topic hz /vs_graphs/body_odom
+
+ros2 topic hz /camera/camera/color/image_raw
+ros2 topic hz /camera/camera/depth/image_rect_raw
+ros2 topic hz /camera/camera/imu
+
+```
