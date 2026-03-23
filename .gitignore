@@ -207,3 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 gesture_real_time_control/datasets/*
+gesture_real_time_control/data/*
