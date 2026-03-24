@@ -1,14 +1,10 @@
 # SLAM launching after building container
 
-<<<<<<< HEAD
-conda env create -f environment.yml
-=======
 ## Main files
 
 Container
 
-- `/home/user/bridge/receiver_bridge.py` 
-- `/home/user/bridge/run_receiver.sh` to launch `receiver_bridge.py`
+- `/home/user/bridge/receiver_bridge_optim.py`
 
 Server
 
@@ -16,10 +12,7 @@ Server
 
 Orange Pi:
 
-- `~/bridge/sender_bridge.py`
-- `~/scripts/run_sender.py` to launch `sender_bridge.py`
-- `~/scripts/run_realsense.sh` to run camera
-- `~/scripts/run_realsense_imu.sh` to rum camera with IMU
+- `~/bridge/sender_direct.py`
 
 ## Launch order
 
@@ -34,21 +27,17 @@ docker start -ai <container_name>
 ```bash
 source /opt/ros/jazzy/setup.bash
 source ~/workspace/install/setup.bash
-```
-`~/bridge/run_receiver.sh`
 
-### 3. Start RealSense on Orange Pi
+python3 /home/user/bridge/receiver_bridge_optim.py   --bind-address 0.0.0.0   --rgb-topic /camera/camera/color/image_raw   --depth-topic /camera/camera/aligned_depth_to_color/image_raw   --camera-info-topic /camera/camera/color/camera_info
+```
+
+### 3. Start sender on Orange Pi
 
 ```bash
-source /opt/ros/humble/setup.bash
+python3 ~/bridge/sender_direct.py   --server-ip 192.168.50.185   --width 640   --height 480   --fps 15   --jpeg-quality 70
 ```
-`~/scripts/run_realsense.sh` 
 
-### 4. Start sender on Orange Pi
-
-`~/scripts/run_sender.py`
-
-### 5. Check topics in the container
+### 4. Check topics in the container
 
 You may need to open another terminal and use
 
@@ -61,7 +50,7 @@ ros2 topic hz /camera/camera/color/image_raw
 ros2 topic hz /camera/camera/aligned_depth_to_color/image_raw
 ```
 
-### 6. Start `vs_graphs` in the container
+### 5. Start `vs_graphs` in the container
 
 ```bash
 source /opt/ros/jazzy/setup.bash
@@ -95,4 +84,4 @@ ros2 node info /segmenter_ros
 ros2 topic hz /vs_graphs/keyframe_image
 ros2 topic hz /camera/color/image_segment
 ```
->>>>>>> 253783a (SLAM)
+
