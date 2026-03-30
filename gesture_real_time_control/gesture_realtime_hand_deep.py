@@ -138,7 +138,7 @@ def draw_gesture_labels(
         xs = [lm.x for lm in hand_landmarks]
         ys = [lm.y for lm in hand_landmarks]
 
-        # print(f"Gesture: {gesture_name}, {hand_landmarks}")
+        print(f"Gesture: {gesture_name}, {hand_landmarks}")
         text_x = int(min(xs) * w)
         text_y = int(min(ys) * h) - 10
         text_y = max(text_y, 25)

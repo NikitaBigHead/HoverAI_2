@@ -208,3 +208,5 @@ __marimo__/
 
 gesture_real_time_control/datasets/*
 gesture_real_time_control/data/*
+*.JPG
+*.jpg
