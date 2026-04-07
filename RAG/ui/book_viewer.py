@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import sys
-import urllib.request
 from pathlib import Path
+
+import requests
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QKeySequence, QPixmap, QTextOption
@@ -105,10 +106,18 @@ class BookPageWidget(QWidget):
 
         if page.image_url:
             try:
-                with urllib.request.urlopen(page.image_url, timeout=10) as response:
-                    data = response.read()
+                response = requests.get(
+                    page.image_url,
+                    timeout=10,
+                    allow_redirects=True,
+                    headers={"User-Agent": "Mozilla/5.0 HoverAI/1.0"},
+                )
+                response.raise_for_status()
+                content_type = response.headers.get("Content-Type", "").split(";")[0].strip().lower()
+                if not content_type.startswith("image/"):
+                    return None
                 pixmap = QPixmap()
-                pixmap.loadFromData(data)
+                pixmap.loadFromData(response.content)
                 if not pixmap.isNull():
                     return pixmap
             except Exception:

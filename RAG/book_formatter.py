@@ -108,6 +108,7 @@ class BookFormatter:
                 title=title,
                 body=cover_body,
                 image_url=payload.image_url,
+                image_local_path=payload.image_local_path,
                 image_caption=clean_caption,
                 source_url=payload.source_url,
                 footer="Cover",
@@ -130,6 +131,7 @@ class BookFormatter:
                     title="Illustration",
                     body=clean_caption or "Reference image",
                     image_url=payload.image_url,
+                    image_local_path=payload.image_local_path,
                     image_caption=clean_caption,
                     source_url=payload.source_url,
                     footer="Image",
@@ -153,7 +155,7 @@ class BookFormatter:
             document_title=title,
             pages=pages,
             source_url=payload.source_url,
-            primary_image_url=payload.image_url,
+            primary_image_url=payload.image_url or payload.image_local_path,
         )
 
     def _build_text_pages(

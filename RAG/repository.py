@@ -15,6 +15,11 @@ class KnowledgeRepository:
                 (item["id"],),
             ).fetchone()
 
+            metadata = dict(item.get("metadata", {}))
+            for key in ("verification_status", "verification_notes", "verified_source_url", "fact_checked_at"):
+                if item.get(key) is not None:
+                    metadata[key] = item.get(key)
+
             values = (
                 item["id"],
                 item.get("entity_type"),
@@ -30,7 +35,7 @@ class KnowledgeRepository:
                 item.get("last_seen_at"),
                 item.get("section"),
                 json.dumps(item.get("tags", []), ensure_ascii=False),
-                json.dumps(item.get("metadata", {}), ensure_ascii=False),
+                json.dumps(metadata, ensure_ascii=False),
             )
 
             if existing:

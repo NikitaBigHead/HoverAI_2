@@ -4,6 +4,7 @@ from pathlib import Path
 
 from db import RagDatabase
 from embeddings import LocalTextEmbedder
+from image_utils import normalize_image_record
 from repository import KnowledgeRepository
 
 
@@ -32,11 +33,14 @@ def ingest_jsonl(
     db_path: str,
     chunk_size: int,
     chunk_overlap: int,
+    image_dir: str,
 ) -> None:
     db = RagDatabase(db_path)
     db.initialize()
     repo = KnowledgeRepository(db)
     embedder = LocalTextEmbedder()
+
+    image_cache: dict[str, dict] = {}
 
     with Path(dataset_path).open("r", encoding="utf-8") as fh:
         for line_number, line in enumerate(fh, start=1):
@@ -53,10 +57,22 @@ def ingest_jsonl(
             )
             embeddings = embedder.encode(chunks, convert_to_numpy=False) if chunks else []
             repo.replace_chunks(document_id, chunks, embeddings)
-            repo.replace_images(document_id, item.get("images", []))
+            normalized_images = []
+            for image in item.get("images", []):
+                cache_key = image.get("image_url") or image.get("source_page") or ""
+                if cache_key and cache_key in image_cache:
+                    normalized_images.append(dict(image_cache[cache_key]))
+                    continue
+
+                normalized = normalize_image_record(image, image_dir)
+                normalized_images.append(normalized)
+                if cache_key:
+                    image_cache[cache_key] = dict(normalized)
+            repo.replace_images(document_id, normalized_images)
             print(
                 f"[ingest] line={line_number} id={item.get('id')} "
-                f"chunks={len(chunks)} images={len(item.get('images', []))}"
+                f"status={item.get('verification_status', 'n/a')} "
+                f"chunks={len(chunks)} images={len(normalized_images)}"
             )
 
 
@@ -64,8 +80,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Ingest JSONL dataset into SQLite")
     parser.add_argument(
         "--dataset",
-        default="skoltech_events_dataset_final_spaced.jsonl",
-        help="Path to JSONL dataset",
+        default="skoltech_events_dataset_verified.jsonl",
+        help="Path to JSONL dataset. The verified dataset is preferred by default.",
     )
     parser.add_argument(
         "--db",
@@ -84,6 +100,11 @@ def main() -> None:
         default=80,
         help="Chunk overlap in characters",
     )
+    parser.add_argument(
+        "--image-dir",
+        default="assets/images",
+        help="Directory for downloaded local images",
+    )
     args = parser.parse_args()
 
     ingest_jsonl(
@@ -91,6 +112,7 @@ def main() -> None:
         db_path=args.db,
         chunk_size=args.chunk_size,
         chunk_overlap=args.chunk_overlap,
+        image_dir=args.image_dir,
     )
 
 

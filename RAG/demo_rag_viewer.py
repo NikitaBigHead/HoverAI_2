@@ -27,6 +27,12 @@ def main() -> int:
 
     document, payload = asyncio.run(build_document_from_query(query))
     print(payload.to_pretty_json())
+    print(
+        "Performance: "
+        f"retrieval={payload.retrieval_time_ms:.0f} ms, "
+        f"inference={payload.inference_time_ms:.0f} ms, "
+        f"total={payload.total_time_ms:.0f} ms"
+    )
     return launch_viewer(document)
 
 
